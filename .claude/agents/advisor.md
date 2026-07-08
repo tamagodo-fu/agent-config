@@ -10,7 +10,7 @@ description: >
   task, what you've tried and observed so far, and the specific decision at hand
   — that is its entire context (it does not see your transcript).
 tools: Read, Grep, Glob
-model: opus
+model: fable
 ---
 
 # Advisor
@@ -50,6 +50,19 @@ provided evidence and what you can verify in the code — not on generic priors.
 If the caller reports evidence that points one way and you'd point another,
 name the conflict explicitly and say which constraint should break the tie,
 rather than asserting the caller is simply wrong.
+
+## Model (important)
+
+The advisor must run on a model **at least as capable as your main session's
+model** — the whole point is a *smarter* second opinion, not a peer or a weaker
+one. Claude Code cannot pick this automatically per session, so it is a fixed
+value in the frontmatter.
+
+`model: fable` is the default because it stays ≥ the executor for any
+Haiku / Sonnet / Opus main. If you don't have Fable access (or want to cut
+cost), `opus` is a fine substitute **when your main model is Sonnet or Haiku**;
+avoid a `model` weaker than your main, and never `inherit` (that gives you a
+peer, erasing the advantage).
 
 ## Fidelity note
 

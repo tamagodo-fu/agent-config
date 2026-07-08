@@ -14,7 +14,7 @@ never implements anything. You get close to advisor-quality decisions while most
 of the work happens at your executor model's speed and cost.
 
 It runs as a subagent, so it gets an **isolated context**, its **own model**
-(`opus` by default), and **read-only tools** — it can inspect your code but can't
+(`fable` by default), and **read-only tools** — it can inspect your code but can't
 edit files or run state-changing commands.
 
 ### When it fires
@@ -47,10 +47,21 @@ Restart Claude Code (or start a new session) and it will pick up the agent.
 
 Edit the frontmatter in `advisor.md`:
 
-- **`model:`** — `opus` (default), `sonnet`, `haiku`, `fable`, a full model ID
-  (e.g. `claude-opus-4-8`), or `inherit`. Use a model **at least as capable as
-  your executor** — the point is a smarter second opinion. To mirror the original
-  advisor-tool pairing (Sonnet executor × Fable advisor), set `model: fable`.
+- **`model:`** — the advisor must be **at least as capable as your main session's
+  model**; a smarter second opinion is the entire point. Claude Code can't pick
+  this per session, so it's a fixed value. Accepted: `fable` (default), `opus`,
+  `sonnet`, `haiku`, a full model ID (e.g. `claude-opus-4-8`), or `inherit`.
+
+  | Your main model | Recommended `model:` |
+  |---|---|
+  | Haiku / Sonnet | `fable` (best) or `opus` (cheaper, still stronger) |
+  | Opus | `fable` |
+  | Fable | `fable` (peer — still useful for a fresh, unbiased review) |
+
+  `fable` is the default because it stays ≥ the executor for every Haiku / Sonnet /
+  Opus main. If you don't have Fable access, drop to `opus` — fine when your main
+  is Sonnet or Haiku. **Never set a model weaker than your main, and never
+  `inherit`** (that gives you a peer, erasing the advantage).
 - **`tools:`** — kept read-only (`Read, Grep, Glob`) so the advisor can verify
   claims against your code without changing anything.
 
