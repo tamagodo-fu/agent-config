@@ -1,6 +1,43 @@
 # agent-config
 
-Shareable [Claude Code](https://docs.claude.com/en/docs/claude-code) subagents.
+Shareable [Claude Code](https://docs.claude.com/en/docs/claude-code) orchestration
+config: an orchestrator `CLAUDE.md`, a set of core rules, and subagents.
+
+## Repository layout
+
+```
+.claude/
+├── CLAUDE.md          # orchestrator entry point — main-loop policy
+├── rules/             # individual rule files, referenced from CLAUDE.md
+│   ├── orchestration.md
+│   ├── performance.md
+│   ├── grounding-judgment.md
+│   ├── memory-writing.md
+│   ├── agents.md
+│   └── terminal-commands.md
+└── agents/
+    └── advisor.md     # see below
+```
+
+### Rules
+
+| File | What it does |
+|---|---|
+| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; actual execution is delegated to subagents. |
+| `performance.md` | Model selection strategy — orchestrator defaults to the top-tier model, workers default to a mid-tier model. |
+| `grounding-judgment.md` | No-speculation by default — prioritize primary sources, and return judgment calls via `AskUserQuestion`. |
+| `memory-writing.md` | Immediately persist failure → resolution learnings to memory in if-then form. |
+| `agents.md` | Guidance for using parallel subagents and multi-perspective analysis effectively. |
+| `terminal-commands.md` | Commands the user must run themselves are handed off via a file, not pasted inline. |
+
+### Usage
+
+Drop these under `~/.claude/` to apply them globally across every project:
+
+- `.claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
+- `.claude/rules/` → `~/.claude/rules/`
+
+(Or place them per-project instead, the same way as the `advisor` agent below.)
 
 ## `advisor` — a stronger-model reviewer for your Claude Code sessions
 
