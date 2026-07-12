@@ -15,8 +15,12 @@ config: an orchestrator `CLAUDE.md`, a set of core rules, and subagents.
 │   ├── memory-writing.md
 │   ├── agents.md
 │   └── terminal-commands.md
-└── agents/
-    └── advisor.md     # see below
+├── agents/
+│   ├── advisor.md     # stronger-model reviewer — see below
+│   └── verifier.md    # stronger-model PASS/FAIL checker — see below
+└── skills/
+    ├── fable-verify/            # executor-verifier loop skill
+    └── cost-effective-harness/  # harness design-guidance skill
 ```
 
 ### Rules
@@ -65,6 +69,38 @@ that matter most:
 - **Before** declaring a task done
 
 You can also invoke it explicitly: `@advisor review this design before I build it`.
+
+## `verifier` — a stronger-model PASS/FAIL check on finished work
+
+`verifier` is the counterpart to `advisor`: where the advisor steers you
+**before and during** a task, the verifier judges the result **after** it. It
+runs on a stronger model (`fable` by default) in an isolated context with
+read-only tools plus `Bash` for verification commands only (tests, builds,
+`git diff`) — it checks the work against explicit acceptance criteria and
+returns a `PASS` / `FAIL` verdict with concrete fix instructions. It never
+implements the fix itself.
+
+### When it fires
+
+- **After** work is done, before you declare a task complete
+- At checkpoints inside a multi-step or `/goal` loop
+- To judge a worker / sub-agent's output before accepting it
+
+It defaults to `FAIL` when evidence is missing (an unverifiable claim is not a
+pass), and it re-checks **every** criterion on re-verification, since a fix
+often regresses a neighbor. For re-verification, resume the *same* verifier via
+`SendMessage` rather than spawning a fresh one — that keeps its prompt cache and
+its memory of the prior failures.
+
+## Skills
+
+Two skills wire the verifier into a repeatable workflow and the cost reasoning
+behind it. Drop them under `~/.claude/skills/` (or a project's `.claude/skills/`).
+
+| Skill | What it does |
+|---|---|
+| `fable-verify` | Runs the full executor-verifier loop: pin down acceptance criteria, launch the `verifier` agent, apply its fix instructions, and re-verify until `PASS` (max 3 rounds). Skip it for trivial diffs where the built-in `/verify` self-check is enough. |
+| `cost-effective-harness` | Design guidance for where to spend frontier intelligence in a multi-agent harness — orchestrator vs. advisor vs. verifier, delegation heuristics, coordination cost, and prompt caching. Read it *before* designing a fan-out or deciding whether to delegate at all. |
 
 ## Install
 
