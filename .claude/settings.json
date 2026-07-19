@@ -1,0 +1,272 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "DISABLE_AUTOUPDATER": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Edit",
+      "Write",
+      "WebSearch",
+      "WebFetch",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Bash(npm *)",
+      "Bash(pip3 install *)",
+      "Bash(pytest *)",
+      "Bash(open *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(cat *)",
+      "Bash(gh api:*)",
+      "Bash(python3:*)",
+      "Bash(wc *)",
+      "Bash(echo *)",
+      "Bash(test *)",
+      "Bash(kill *)",
+      "Bash(pkill *)",
+      "Bash(pgrep *)",
+      "Bash(lsof *)",
+      "Bash(xargs *)",
+      "Bash(sips *)",
+      "Bash(chmod *)",
+      "Bash(brew *)",
+      "Bash(tmux *)",
+      "Bash(cursor *)",
+      "Bash(node */codex-companion.mjs*)",
+      "mcp__plugin_playwright_playwright__*"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(:\\(\\)\\{ :\\|:& \\};:)",
+      "Bash(chmod 777 *)"
+    ],
+    "ask": [
+      "Bash(gcloud services enable:*)",
+      "Bash(gcloud alpha services enable:*)",
+      "Bash(gcloud beta services enable:*)",
+      "Bash(gcloud services disable:*)",
+      "Bash(gcloud billing:*)",
+      "Bash(gcloud ai *)",
+      "Bash(aws *)",
+      "Bash(az *)",
+      "Bash(git rebase *)",
+      "Bash(git merge *)",
+      "Bash(docker *)",
+      "Bash(npx:*)",
+      "Bash(source:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(rm:*)",
+      "Bash(env)",
+      "Bash(env:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push * --force *)",
+      "Bash(git reset --hard:*)",
+      "mcp__plugin_playwright_playwright__browser_run_code_unsafe"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "claude-fable-5[1m]",
+  "skillOverrides": {
+    "content-strategy": "off",
+    "copywriting": "off",
+    "elevenlabs-skills": "off",
+    "kling-prompt-generator": "off",
+    "launch-strategy": "off",
+    "marketing-psychology": "off",
+    "morphic-shortfilm": "off",
+    "podcast-to-x-article": "off",
+    "shortfilm-postproduction": "off",
+    "shortfilm-preproduction": "off",
+    "social-content": "off"
+  },
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/takuya.toyama/.ccw/ccw_hook.py",
+            "timeout": 60000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "(AskUserQuestion|mcp__.*__AskUserQuestion)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/takuya.toyama/Projects/extended-gbrain/.claude/skills/gstack/hosts/claude/hooks/question-log-hook",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "(AskUserQuestion|mcp__.*__AskUserQuestion)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/takuya.toyama/Projects/extended-gbrain/.claude/skills/gstack/hosts/claude/hooks/auq-error-fallback-hook",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/bq_readonly_guard.py",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "python3 /Users/takuya.toyama/.local/share/security-scan/preflight_hook.py",
+            "timeout": 10000
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/cloud_spend_guard.py",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/worker_model_guard.py",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Read|Edit|Write|Grep|NotebookEdit|NotebookRead",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/env_access_guard.py",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/secret_files_guard.py",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "matcher": "(AskUserQuestion|mcp__.*__AskUserQuestion)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/takuya.toyama/Projects/extended-gbrain/.claude/skills/gstack/hosts/claude/hooks/question-preference-hook",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/Users/takuya.toyama/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /Users/takuya.toyama/.claude/hooks/signal_detector_remind.py",
+            "timeout": 3000
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": false,
+    "code-simplifier@claude-plugins-official": false,
+    "codex@openai-codex": true,
+    "commit-commands@claude-plugins-official": false,
+    "compound-engineering@every-marketplace": false,
+    "context7@claude-plugins-official": true,
+    "figma@claude-plugins-official": false,
+    "frontend-design@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "impeccable@impeccable": false,
+    "linear@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "serena@claude-plugins-official": false,
+    "skills-powerkit@claude-code-plugins-plus": false,
+    "supabase@claude-plugins-official": false,
+    "swift-lsp@claude-plugins-official": false,
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "agents-for-legal-jp": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/takuya.toyama/Projects/agents-for-legal-jp"
+      }
+    },
+    "higgsfield": {
+      "source": {
+        "source": "github",
+        "repo": "higgsfield-ai/skills"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "shopify-ai-toolkit": {
+      "source": {
+        "source": "github",
+        "repo": "Shopify/shopify-ai-toolkit"
+      }
+    }
+  },
+  "language": "日本語",
+  "effortLevel": "high",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark",
+  "verbose": true,
+  "preferredNotifChannel": "ghostty",
+  "autoCompactEnabled": true,
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
+}
