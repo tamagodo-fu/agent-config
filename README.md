@@ -1,26 +1,33 @@
 # agent-config
 
-Shareable [Claude Code](https://docs.claude.com/en/docs/claude-code) orchestration
-config: an orchestrator `CLAUDE.md`, a set of core rules, and subagents.
+Shareable coding-agent configuration, with
+[Claude Code](https://docs.claude.com/en/docs/claude-code) as the source of
+truth: an orchestrator `CLAUDE.md`, a set of core rules, subagents, a
+hand-written skill collection — plus the derived configs that share the same
+policies with **Codex CLI**, **herdr**, and **agmsg**.
 
 ## Repository layout
 
 ```
 .claude/
 ├── CLAUDE.md          # orchestrator entry point — main-loop policy
+├── settings.json      # permissions / hooks / plugins (reference)
 ├── rules/             # individual rule files, referenced from CLAUDE.md
 │   ├── orchestration.md
 │   ├── performance.md
 │   ├── grounding-judgment.md
 │   ├── memory-writing.md
 │   ├── agents.md
+│   ├── coding-style.md
+│   ├── testing.md
 │   └── terminal-commands.md
 ├── agents/
 │   ├── advisor.md     # stronger-model reviewer — see below
 │   └── verifier.md    # stronger-model PASS/FAIL checker — see below
 └── skills/
-    ├── fable-verify/            # executor-verifier loop skill
-    └── cost-effective-harness/  # harness design-guidance skill
+    ├── fable-verify/            # executor-verifier loop skill (flagship)
+    ├── cost-effective-harness/  # harness design-guidance skill (flagship)
+    └── ...                      # ~30 hand-written skills — see Skills below
 .codex/
 ├── AGENTS.md                    # cross-CLI instructions generated from .claude/CLAUDE.md + rules
 ├── sync-agents-md-check.sh      # drift detector: warns when the .claude sources change
@@ -35,12 +42,33 @@ config: an orchestrator `CLAUDE.md`, a set of core rules, and subagents.
 
 | File | What it does |
 |---|---|
-| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; actual execution is delegated to subagents. |
+| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; execution is delegated to subagents. Large fan-outs (4+ parallel agents, Workflow, ultracode) require explicit user approval with a cost/tradeoff explanation. |
 | `performance.md` | Model selection strategy — orchestrator defaults to the top-tier model, workers default to a mid-tier model. |
 | `grounding-judgment.md` | No-speculation by default — prioritize primary sources, and return judgment calls via `AskUserQuestion`. |
 | `memory-writing.md` | Immediately persist failure → resolution learnings to memory in if-then form. |
 | `agents.md` | Guidance for using parallel subagents and multi-perspective analysis effectively. |
+| `coding-style.md` | Simplicity First; quality/robustness/maintainability over development cost (subordinate to Simplicity First); report unrelated issues instead of silently fixing them. |
+| `testing.md` | TDD workflow, 80% coverage floor, and a bug-fix rule: reproduce in an end-user-like E2E setting before fixing. |
 | `terminal-commands.md` | Commands the user must run themselves are handed off via a file, not pasted inline. |
+
+## Cross-CLI sharing
+
+`.claude/` is the canonical config; the other directories are derived views so
+Codex CLI, herdr-managed agents, and agmsg peers follow the same policies:
+
+- **`.codex/AGENTS.md`** is generated from `CLAUDE.md` + `rules/`, with
+  CLI-specific mechanics (tool names, hooks, settings) translated into
+  tool-agnostic wording. `sync-agents-md-check.sh` hashes the sources and warns
+  when the generated file is stale.
+- **`.codex/config.toml`** is a sanitized snapshot — machine-local state
+  (project trust lists, hook state, marketplaces, auto-injected MCP servers)
+  is stripped; preferences, features, plugins, sandbox roots, and MCP
+  definitions remain.
+- **`.agents/skills/agmsg/plugins/types/devin/`** adds Devin support to
+  [agmsg](https://github.com/fujibee/agmsg) (SQLite-based cross-agent
+  messaging) via its plugin mechanism, so the driver survives installer
+  updates. Delivery uses Devin's always-on rules path
+  (`.windsurf/rules/agmsg.md`); `spawnable` via `devin -- "<prompt>"`.
 
 ### Usage
 
