@@ -1,0 +1,96 @@
+# sanitized copy of ~/.codex/config.toml for publication.
+# Removed machine-local state: [projects.*] trust list, [hooks.state.*],
+# [marketplaces.*], [notice.*], [tui.*], and auto-injected MCP servers
+# (node_repl / computer-use, managed by the ChatGPT desktop app).
+
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
+personality = "pragmatic"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+service_tier = "default"
+
+# agmsg (cross-agent messaging) needs write access to its SQLite/team state
+[sandbox_workspace_write]
+writable_roots = ["~/.agents/skills/agmsg/db", "~/.agents/skills/agmsg/teams", "~/.agents/skills/agmsg/run"]
+network_access = true
+
+[features]
+multi_agent = true
+apps = true
+prevent_idle_sleep = true
+hooks = true
+js_repl = false
+memories = true
+
+[plugins."google-calendar@openai-curated"]
+enabled = true
+
+[plugins."gmail@openai-curated"]
+enabled = true
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[plugins."google-drive@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."computer-use@openai-bundled"]
+enabled = true
+
+[plugins."remotion@openai-curated"]
+enabled = true
+
+[plugins."hyperframes@openai-curated"]
+enabled = true
+
+[plugins."build-ios-apps@openai-curated"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+# local gbrain knowledge-base MCP (same definition as Claude Code / Devin)
+[mcp_servers.gbrain]
+command = "~/bin/gbrain"
+args = ["serve"]
+
+[desktop]
+preventSleepWhileRunning = true
+keepRemoteControlAwakeWhilePluggedIn = true
+followUpQueueMode = "queue"
+dock-icon-preference = "codex-system"
+hotkey-window-projectless-default-enabled = true
+show-context-window-usage = true
+composerEnterBehavior = "cmdAlways"
+
+[memories]
+generate_memories = true
+use_memories = true
+disable_on_external_context = true

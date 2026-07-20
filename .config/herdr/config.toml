@@ -1,0 +1,27 @@
+onboarding = false
+[ui.sound]
+enabled = false
+
+[ui]
+agent_panel_sort = "priority"
+show_agent_labels_on_pane_borders = true
+
+[experimental]
+pane_history = true
+switch_ascii_input_source_in_prefix = false
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[ui.toast]
+delivery = "system"
+
+[keys]
+previous_workspace = "prefix+["
+next_workspace = "prefix+]"
+switch_workspace = "prefix+shift+1..9"
+
+previous_agent = "prefix+ctrl+alt+["
+next_agent = "prefix+ctrl+alt+]"
+focus_agent = "prefix+ctrl+alt+1..9"
