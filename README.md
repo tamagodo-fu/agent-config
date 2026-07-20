@@ -21,6 +21,14 @@ config: an orchestrator `CLAUDE.md`, a set of core rules, and subagents.
 └── skills/
     ├── fable-verify/            # executor-verifier loop skill
     └── cost-effective-harness/  # harness design-guidance skill
+.codex/
+├── AGENTS.md                    # cross-CLI instructions generated from .claude/CLAUDE.md + rules
+├── sync-agents-md-check.sh      # drift detector: warns when the .claude sources change
+└── config.toml                  # sanitized Codex CLI config (machine-local state removed)
+.config/herdr/
+└── config.toml                  # herdr (terminal multiplexer for agents) keybinds / UI prefs
+.agents/skills/agmsg/plugins/types/devin/
+└── ...                          # custom Devin type driver for agmsg cross-agent messaging
 ```
 
 ### Rules
