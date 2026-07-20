@@ -102,8 +102,15 @@ its memory of the prior failures.
 
 ## Skills
 
-Two skills wire the verifier into a repeatable workflow and the cost reasoning
-behind it. Drop them under `~/.claude/skills/` (or a project's `.claude/skills/`).
+`.claude/skills/` also carries the full hand-written skill collection —
+plan grilling (`grilling`, `grill-for-unknowns`), spec-to-issue pipeline
+(`to-spec`, `to-tickets`, `wayfinder`), loop engineering, media generation
+wrappers (`higgsfield-*`, `whisper-transcribe`), marketing set, and more.
+Browse the directory; each skill is self-describing via its `SKILL.md`.
+
+The two flagship skills wire the verifier into a repeatable workflow and the
+cost reasoning behind it. Drop them under `~/.claude/skills/` (or a project's
+`.claude/skills/`).
 
 | Skill | What it does |
 |---|---|
