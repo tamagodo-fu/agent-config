@@ -1,27 +1,23 @@
 # Claude Code Guidelines
 
-## Grounding & Judgment (CRITICAL)
+## Context Hygiene (CRITICAL)
 
-既定は no-speculation。一次ソース(公式doc/最新code)から始め、推測で埋めない。トレードオフ・選好は黙って既定値を選ばず `AskUserQuestion` で返す。判断が要る場面での確認・選択も `AskUserQuestion` を使う。
+設定(CLAUDE.md/rules/skills)は「足す」より「痩せさせる」。常時ロードは安全・判断の土台だけに絞り、状況依存ルールは skill / paths: ゲートへ。絶対命令は security 等の highly important area に限定。定期的に /doctor で棚卸し。
 
-詳細ルール: `~/.claude/rules/grounding-judgment.md`
+詳細ルール: `~/.claude/rules/context-hygiene.md`
 
-## Memory Writing (CRITICAL)
+## File Naming
 
-作業中に得た「失敗 → 原因特定 → 解決」の学びは、**ユーザー指示を待たず** if-then 形式でプロジェクトメモリへ即保存する。失敗ナレーションは書かず正解だけ書く。
-
-詳細ルール: `~/.claude/rules/memory-writing.md`
-
-## Terminal Commands Delivery (CRITICAL)
-
-ユーザーが自分で実行する必要がある鍵情報を含むコマンドは必ず **プロジェクトローカル** の `<project-root>/.claude/tmp/<task-name>.sh` に書き (`.gitignore` 推奨)、`open` でエディタを起動してから「ファイルを開いたのでそこからコピーしてください」と伝える。
-
-理由: TUI 直接貼り付けは改行折り返し・マークダウンエスケープで壊れ、ユーザーが手動編集する必要があり workflow を停滞させる。
-
-詳細ルール: `~/.claude/rules/terminal-commands.md`
+新規作成するファイル名は project 問わず**なるべく英語の slug 形式**（kebab-case、ASCII のみ）にする。例: `dal-ai-usage-guide.html`。理由: herdr-edit 等の CLI がマルチバイトパスで壊れることがあり、GBrain 的にも slug の方が読み取りやすい。文書タイトル（中身の見出し）は日本語のままでよい。
 
 ## オーケストレーション方針
 
-メインループは**ユーザー指示の解釈と作業の分担に専念**し、実作業はサブスレッド(named sub-agent)に委譲する。固定ワーカー役は最初から作らず、都度skill/その場のプロンプトで委譲するかjudgeする。
+メインループは**ユーザー指示の解釈と作業の分担に専念**し、実作業は named sub-agent に委譲する。4体以上の並列 fan-out / `Workflow` / ultracode は事前に `AskUserQuestion` で承認を得る。モデルは Orchestrator=Fable / Worker既定=Sonnet。
 
-詳細ルール: `~/.claude/rules/orchestration.md`
+詳細: `~/.claude/docs/orchestration.md`(委譲の細目)、`~/.claude/docs/performance.md`(モデル選択)
+
+## 状況依存ルール（発火トリガ）
+
+- git commit/push/PR 作業時は `git-workflow` skill を使う（push が 404/Repository not found で失敗したら特に必須 — アカウント切替手順がある）
+- hook にブロックされたら `~/.claude/docs/hooks.md` を参照
+- 新機能実装時は battle-tested なスケルトンプロジェクトを探して土台にすることを検討
