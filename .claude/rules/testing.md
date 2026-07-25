@@ -10,22 +10,21 @@ paths:
 
 # Testing Requirements
 
-## Minimum Test Coverage: 80%
+## Coverage は規模とリスクで judgment
 
-Test Types (ALL required):
+一律 80% ・全種テスト必須にしない。**コアロジック/壊れると痛い箇所は厚く**、小さなユーティリティに E2E は不要。テスト種別も対象に応じて取捨する:
 1. **Unit Tests** - Individual functions, utilities, components
 2. **Integration Tests** - API endpoints, database operations
-3. **E2E Tests** - Critical user flows
+3. **E2E Tests** - Critical user flows(重要なユーザーフローに絞る)
 
 ## Test-Driven Development
 
-MANDATORY workflow:
+新機能・バグ修正の既定ワークフロー:
 1. Write test first (RED)
 2. Run test - it should FAIL
 3. Write minimal implementation (GREEN)
 4. Run test - it should PASS
 5. Refactor (IMPROVE)
-6. Verify coverage (80%+)
 
 ## Bug Fix Workflow
 

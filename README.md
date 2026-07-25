@@ -11,16 +11,17 @@ policies with **Codex CLI**, **herdr**, and **agmsg**.
 ```
 .claude/
 ├── CLAUDE.md          # orchestrator entry point — main-loop policy
-├── settings.json      # permissions / hooks / plugins (reference)
-├── rules/             # individual rule files, referenced from CLAUDE.md
-│   ├── orchestration.md
-│   ├── performance.md
+├── rules/             # rule files, referenced from CLAUDE.md
 │   ├── grounding-judgment.md
 │   ├── memory-writing.md
-│   ├── agents.md
+│   ├── terminal-commands.md
+│   ├── context-hygiene.md
 │   ├── coding-style.md
-│   ├── testing.md
-│   └── terminal-commands.md
+│   └── testing.md
+├── docs/              # lazy-loaded references (pulled in only when relevant)
+│   ├── orchestration.md
+│   ├── performance.md
+│   └── terminal-commands-details.md
 ├── agents/
 │   ├── advisor.md     # stronger-model reviewer — see below
 │   └── verifier.md    # stronger-model PASS/FAIL checker — see below
@@ -40,23 +41,33 @@ policies with **Codex CLI**, **herdr**, and **agmsg**.
 
 ### Rules
 
+Always-loaded (or `paths:`-gated) policy that forms the judgment/safety baseline:
+
 | File | What it does |
 |---|---|
-| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; execution is delegated to subagents. Large fan-outs (4+ parallel agents, Workflow, ultracode) require explicit user approval with a cost/tradeoff explanation. |
-| `performance.md` | Model selection strategy — orchestrator defaults to the top-tier model, workers default to a mid-tier model. |
 | `grounding-judgment.md` | No-speculation by default — prioritize primary sources, and return judgment calls via `AskUserQuestion`. |
 | `memory-writing.md` | Immediately persist failure → resolution learnings to memory in if-then form. |
-| `agents.md` | Guidance for using parallel subagents and multi-perspective analysis effectively. |
+| `terminal-commands.md` | Hard-line guard for destructive ops plus file-handoff for commands the user must run themselves; the detailed judgment is lazy-loaded from `docs/`. |
+| `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. Loaded only when editing `.claude` config (`paths:` gated). |
 | `coding-style.md` | Simplicity First; quality/robustness/maintainability over development cost (subordinate to Simplicity First); report unrelated issues instead of silently fixing them. |
-| `testing.md` | TDD workflow, 80% coverage floor, and a bug-fix rule: reproduce in an end-user-like E2E setting before fixing. |
-| `terminal-commands.md` | Commands the user must run themselves are handed off via a file, not pasted inline. |
+| `testing.md` | Coverage and test-type selection by size/risk (no fixed floor), a TDD default workflow, and a bug-fix rule: reproduce in an end-user-like E2E setting before fixing. |
+
+### docs/ (lazy-loaded references)
+
+Situational guidance, kept out of the always-loaded context and pulled in only when needed:
+
+| File | What it does |
+|---|---|
+| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; execution is delegated to subagents. Large fan-outs (4+ parallel agents, Workflow, ultracode) require explicit user approval with a cost/tradeoff explanation. Absorbs the former `agents.md` guidance on parallel subagents. |
+| `performance.md` | Model selection strategy — orchestrator defaults to the top-tier model, workers default to a mid-tier model. |
+| `terminal-commands-details.md` | The detailed patterns behind `terminal-commands.md` — when to hand off vs. self-execute, and the file-writeout mechanics. |
 
 ## Cross-CLI sharing
 
 `.claude/` is the canonical config; the other directories are derived views so
 Codex CLI, herdr-managed agents, and agmsg peers follow the same policies:
 
-- **`.codex/AGENTS.md`** is generated from `CLAUDE.md` + `rules/`, with
+- **`.codex/AGENTS.md`** is generated from `CLAUDE.md` + `rules/` + `docs/`, with
   CLI-specific mechanics (tool names, hooks, settings) translated into
   tool-agnostic wording. `sync-agents-md-check.sh` hashes the sources and warns
   when the generated file is stale.
@@ -76,6 +87,7 @@ Drop these under `~/.claude/` to apply them globally across every project:
 
 - `.claude/CLAUDE.md` → `~/.claude/CLAUDE.md`
 - `.claude/rules/` → `~/.claude/rules/`
+- `.claude/docs/` → `~/.claude/docs/`
 
 (Or place them per-project instead, the same way as the `advisor` agent below.)
 

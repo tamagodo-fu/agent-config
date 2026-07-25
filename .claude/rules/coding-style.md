@@ -23,9 +23,9 @@ paths:
 
 技術判断では開発コスト(実装労力)を大きく重み付けしない。品質・堅牢性・スケーラビリティ・長期保守性を優先する。ただし **Simplicity First に従属**: 品質優先を理由に投機的な抽象・要求外の柔軟性を足すのは不可。
 
-## Immutability (CRITICAL)
+## Immutability
 
-ALWAYS create new objects/values, NEVER mutate in place:
+既定は不変データ。新しいオブジェクト/値を返す。パフォーマンス等の明確な理由がある時だけ局所的な mutation を許容する(judgment)。既定の形:
 
 ```javascript
 // WRONG: Mutation
@@ -94,4 +94,4 @@ Before marking work complete:
 - [ ] 現実に起きる失敗だけ処理(不可能シナリオは書かない)
 - [ ] No debug print/console.log statements left in
 - [ ] No hardcoded values
-- [ ] No mutation (immutable patterns used)
+- [ ] 既定は不変データ(局所 mutation は明確な理由がある時のみ)
