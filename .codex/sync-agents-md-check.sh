@@ -1,5 +1,6 @@
 #!/bin/sh
-# ~/.codex/AGENTS.md は ~/.claude/CLAUDE.md + ~/.claude/rules/*.md から手動で派生させたファイル。
+# ~/.codex/AGENTS.md は ~/.claude/CLAUDE.md + ~/.claude/rules/*.md + docs/ の policy 3本
+# (orchestration / performance / terminal-commands-details) から手動で派生させたファイル。
 # 自動生成ではなく、Claude固有のツール名を人手で言い換えて作っているため、このスクリプトは
 # 「同期元が変わったかどうか」を検知するだけで、AGENTS.md自体は再生成しない。
 #
@@ -10,7 +11,11 @@
 set -eu
 
 BASELINE_FILE="$HOME/.codex/.agents_md_source.sha256"
-SOURCE_FILES="$HOME/.claude/CLAUDE.md $HOME/.claude/rules"/*.md
+# docs/hooks.md は環境固有なので対象外。policy に関わる docs/ の 3本だけを含める。
+SOURCE_FILES="$HOME/.claude/CLAUDE.md $HOME/.claude/rules/*.md \
+$HOME/.claude/docs/orchestration.md \
+$HOME/.claude/docs/performance.md \
+$HOME/.claude/docs/terminal-commands-details.md"
 
 hash_sources() {
   cat $SOURCE_FILES | shasum -a 256 | awk '{print $1}'
@@ -32,10 +37,10 @@ fi
 BASELINE_HASH="$(cat "$BASELINE_FILE")"
 
 if [ "$CURRENT_HASH" = "$BASELINE_HASH" ]; then
-  echo "同期済み: ~/.claude/CLAUDE.md + rules/ に前回生成時からの変更なし"
+  echo "同期済み: ~/.claude/CLAUDE.md + rules/ + docs/(policy 3本) に前回生成時からの変更なし"
   exit 0
 else
-  echo "要再生成: ~/.claude/CLAUDE.md または rules/ が前回のAGENTS.md生成時から変更されています"
+  echo "要再生成: ~/.claude/CLAUDE.md / rules/ / docs/(policy 3本) のいずれかが前回のAGENTS.md生成時から変更されています"
   echo "~/.codex/AGENTS.md を確認し、必要な変更を反映した上で $0 --update を実行してください"
   exit 1
 fi
