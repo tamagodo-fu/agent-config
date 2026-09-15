@@ -46,11 +46,12 @@ Always-loaded (or `paths:`-gated) policy that forms the judgment/safety baseline
 | File | What it does |
 |---|---|
 | `grounding-judgment.md` | No-speculation by default — prioritize primary sources, and return judgment calls via `AskUserQuestion`. |
-| `memory-writing.md` | Immediately persist failure → resolution learnings to memory in if-then form. |
+| `security.md` | Pre-commit secret scan and boundary-scoped security checks, plus the stop-and-report protocol when an issue is found. |
+| `memory-writing.md` | Write to memory only on explicit request or inside an approved recording workflow; record correct if-then rules only, never failure narration. |
 | `terminal-commands.md` | Hard-line guard for destructive ops plus file-handoff for commands the user must run themselves; the detailed judgment is lazy-loaded from `docs/`. |
-| `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. Loaded only when editing `.claude` config (`paths:` gated). |
+| `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. `paths:`-gated to `.claude` config (CLAUDE.md / rules / docs / agents / skills / settings), with CLAUDE.md carrying an explicit read-before-editing trigger since the gate fires on file reads. |
 | `coding-style.md` | Simplicity First; quality/robustness/maintainability over development cost (subordinate to Simplicity First); report unrelated issues instead of silently fixing them. |
-| `testing.md` | Coverage and test-type selection by size/risk (no fixed floor), a TDD default workflow, and a bug-fix rule: reproduce in an end-user-like E2E setting before fixing. |
+| `testing.md` | Coverage and test-type selection by size/risk (no fixed floor), a TDD default that may be simplified for low-risk mechanical changes, and a bug-fix rule: reproduce minimally first, escalating to E2E only when the flow itself is the suspect. |
 
 ### docs/ (lazy-loaded references)
 

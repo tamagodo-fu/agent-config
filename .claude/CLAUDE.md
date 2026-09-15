@@ -4,7 +4,7 @@
 
 設定(CLAUDE.md/rules/skills)は「足す」より「痩せさせる」。常時ロードは安全・判断の土台だけに絞り、状況依存ルールは skill / paths: ゲートへ。絶対命令は security 等の highly important area に限定。定期的に /doctor で棚卸し。
 
-詳細ルール: `~/.claude/rules/context-hygiene.md`
+`~/.claude` 配下の設定(CLAUDE.md / rules / docs / agents / skills / settings.json)を編集する時は、着手前に `~/.claude/rules/context-hygiene.md` を読む。
 
 ## File Naming
 
@@ -12,7 +12,7 @@
 
 ## オーケストレーション方針
 
-メインループは**ユーザー指示の解釈と作業の分担に専念**し、実作業は named sub-agent に委譲する。4体以上の並列 fan-out / `Workflow` / ultracode は事前に `AskUserQuestion` で承認を得る。モデルは Orchestrator=Fable / Worker既定=Sonnet。
+メインループはユーザー指示の解釈と完遂に責任を持ち、独立して進められる実作業は必要に応じて named sub-agent に委譲する。4体以上の並列 fan-out / `Workflow` / ultracode は事前に `AskUserQuestion` で承認を得る。モデルは Orchestrator=Fable。委譲する場合の Worker 既定=Sonnet。
 
 詳細: `~/.claude/docs/orchestration.md`(委譲の細目)、`~/.claude/docs/performance.md`(モデル選択)
 

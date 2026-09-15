@@ -1,6 +1,6 @@
 # Terminal Commands Delivery Rule
 
-ユーザー自身が実行する必要があるコマンド(interactive credential 入力・sudo password・Web UI 手順・ユーザーが「自分で実行する」と言った場合等の narrow scope のみ)は、TUI に直接貼らず `<project-root>/.claude/tmp/<task-name>.sh` に書いて `open`(テキストとして)で開いて渡す。`.claude/tmp/` が無ければ作り、`.claude/` は gitignore する。
+ユーザー自身が実行する必要があるコマンド(interactive credential 入力・sudo password・Web UI 手順・ユーザーが「自分で実行する」と言った場合等の narrow scope のみ)は、TUI に直接貼らず `<project-root>/.claude/tmp/<task-name>.sh` に書いて渡す。開き方: **HERDR_ENV=1 なら herdr pane を split して `druk <path>` で表示**(`open -t` の外部エディタは使わない)。herdr外のみ `open`(テキストとして)。`.claude/tmp/` が無ければ作り、`.claude/` は gitignore する。
 
 それ以外は既定で self-execute(権限制御は permission prompt 任せ)。事前に txt 化して「念のため確認」する必要は無い。
 
