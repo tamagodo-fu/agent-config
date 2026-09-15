@@ -22,7 +22,7 @@ Claude 5系は判断力が高く、過剰な明示ルールは矛盾指示を生
 Claude に文脈を渡すときは説明文より "code as reference" を優先する。
 - 仕様は散文より、詳細なテストスイートや別コードベースの参照実装で渡す。
 - デザインは説明やスクショより HTML モックアップで渡す方が結果が良い。
-- 「良し悪しの選好」(例: 良い API 設計とは)は rubric 化し、verifier agent(/fable-verify)で検証させる。
+- 「良し悪しの選好」(例: 良い API 設計とは)は rubric 化し、verifier agent(/fable-verify)を必要に応じて使い、重要な判断や変更を検証する。
 
 ## 自作ツール/skill のインタフェース設計
 

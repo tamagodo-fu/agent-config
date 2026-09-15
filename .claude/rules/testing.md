@@ -12,14 +12,14 @@ paths:
 
 ## Coverage は規模とリスクで judgment
 
-一律 80% ・全種テスト必須にしない。**コアロジック/壊れると痛い箇所は厚く**、小さなユーティリティに E2E は不要。テスト種別も対象に応じて取捨する:
+一律 80% ・全種テスト必須にしない。**コアロジック/壊れると痛い箇所は厚く**、小さなユーティリティに E2E は不要。変更が影響する境界と失敗時の損失に応じて、最小限で意味のある検証を選ぶ:
 1. **Unit Tests** - Individual functions, utilities, components
 2. **Integration Tests** - API endpoints, database operations
 3. **E2E Tests** - Critical user flows(重要なユーザーフローに絞る)
 
 ## Test-Driven Development
 
-新機能・バグ修正の既定ワークフロー:
+新機能・バグ修正の既定ワークフロー。変更が機械的で、既存チェックだけで十分な低リスク作業では judgment で簡略化してよい:
 1. Write test first (RED)
 2. Run test - it should FAIL
 3. Write minimal implementation (GREEN)
@@ -28,7 +28,7 @@ paths:
 
 ## Bug Fix Workflow
 
-バグ修正は、**エンドユーザーの体験に可能な限り近い E2E 設定でバグを再現することから始める**。再現できて初めて真因に当たっていることが保証される。再現手順は再現テスト(RED)に落とし、TDD フローに接続する。
+バグ修正は、まずユーザーが観測した不具合を最小構成で再現し、再現手順を可能な限り自動テスト(RED)に落とす。複数コンポーネントの連携や画面操作そのものが原因候補である重要フローでは E2E を使う。局所的なロジック不具合では unit / integration の再現で十分と判断してよい。
 
 ## Troubleshooting Test Failures
 
@@ -36,7 +36,9 @@ paths:
 2. Verify mocks are correct
 3. Fix implementation, not tests (unless tests are wrong)
 
+変更に関連する必須チェックが通ったら検証を終える。新しい変更、失敗、未解決の懸念がない限り、根拠なくテスト範囲を広げたり同じチェックを繰り返したりしない。
+
 ## Skill Support
 
-- `tdd` skill - write-tests-first、新機能・バグ修正で使う
-- `e2e` / `generate-e2e` skill - E2Eテスト生成・実行(プロジェクト固有のe2e skillがあれば優先)
+- `tdd` skill - write-tests-first が有用で、利用可能な場合に使う
+- `e2e` / `generate-e2e` skill - E2E が適切で、利用可能な場合に使う(プロジェクト固有のe2e skillがあれば優先)

@@ -3,8 +3,8 @@
 # [marketplaces.*], [notice.*], [tui.*], and auto-injected MCP servers
 # (node_repl / computer-use, managed by the ChatGPT desktop app).
 
-model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
 personality = "pragmatic"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
@@ -19,6 +19,7 @@ network_access = true
 
 [features]
 multi_agent = true
+multi_agent_v2 = true
 apps = true
 prevent_idle_sleep = true
 hooks = true

@@ -12,7 +12,7 @@
 
 ## オーケストレーション方針
 
-メインループは**ユーザー指示の解釈と作業の分担に専念**し、実作業は named sub-agent に委譲する。4体以上の並列 fan-out / `Workflow` / ultracode は事前に `AskUserQuestion` で承認を得る。モデルは Orchestrator=Fable / Worker既定=Sonnet。
+メインループはユーザー指示の解釈と完遂に責任を持ち、独立して進められる実作業は必要に応じて named sub-agent に委譲する。4体以上の並列 fan-out / `Workflow` / ultracode は事前に `AskUserQuestion` で承認を得る。モデルは Orchestrator=Fable。委譲する場合の Worker 既定=Sonnet。
 
 詳細: `~/.claude/docs/orchestration.md`(委譲の細目)、`~/.claude/docs/performance.md`(モデル選択)
 
