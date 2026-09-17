@@ -5,12 +5,12 @@
 現行モデル: Fable 5.1 (`claude-fable-5-1`) / Opus 5 (`claude-opus-5`) / Sonnet 5 (`claude-sonnet-5`) / Haiku 4.5 (`claude-haiku-4-5-20251001`)。(Fable 5 / Opus 4.8 は legacy)
 
 **Orchestrator**（メインループ。`~/.claude/settings.json` の `model`）
-- 既定 = Fable（設定値は `claude-fable-5-1[1m]`）。サブスクで使える限りFableを使う。
+- 既定 = Fable（`settings.json` の値は `claude-fable-5-1`。`[1m]` 等の context サフィックスは公式記法に無く、Fable 5.1 は 1M context がネイティブなので不要）。サブスクで使える限りFableを使う。
 - Fableが可用性の問題で使えない時だけ手動で `opus` に切替える(可用性起因の自動フォールバックは無いので、その場のセッションで手動判断)。
-- ただし**安全分類器による自動フォールバックは存在する**: Fable 5 はcyber/bio分類器付きで、フラグされると自動でOpusに切替わり以降そのセッションはOpusのまま継続する(初回リクエストのCLAUDE.md/ワークスペースコンテキストでも発火し得る)。Opusになっていたら `/model fable` で復帰。詳細はメモリ `fable-opus-fallback` 参照。
+- **安全分類器による自動フォールバックの実測**(公式ドキュメントには記載が無く、以下は自環境での観測に基づく): cyber/bio分類器にフラグされると自動でOpusに切替わり、以降そのセッションはOpusのまま継続する(初回リクエストのCLAUDE.md/ワークスペースコンテキストでも発火し得る)。Opusになっていたら `/model fable` で復帰。詳細はメモリ `fable-opus-fallback` 参照。
 
 **Worker**（`Agent` ツールで呼ぶサブエージェント。`.claude/agents/*.md` の `model:`）
-- 委譲する場合の既定 = Sonnet 5。各agent frontmatterはsonnetを既定値にする。
+- 委譲する場合の既定 = Sonnet 5。各agent frontmatterはsonnetを既定値にする(frontmatter の `model:` は short name で書く: `fable` / `opus` / `sonnet` / `haiku`。`fable` は Fable 5.1 を指す)。
 - 例外: そのタスクが「深い推論が要る」とオーケストレーターが判断した時だけ、`Agent` 呼び出しの `model` パラメータでそのタスク単位に `opus` を指定する(アーキテクチャ判断、行き詰まったデバッグ、セキュリティクリティカルなレビュー等)。frontmatter自体を恒久的にopus固定にはしない。
 - Haiku 4.5は「本当に単純作業」の時だけ明示的に使う。Usage枠に余裕があってもそれを理由にHaikuへ寄せない(委譲時の既定はSonnet)。
 

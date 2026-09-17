@@ -3,6 +3,8 @@ paths:
   - "**/CLAUDE.md"
   - "**/.claude/rules/**"
   - "**/.claude/skills/**"
+  - "**/.claude/docs/**"
+  - "**/.claude/agents/**"
   - "**/.claude/settings.json"
   - "**/.claude/settings.local.json"
 ---

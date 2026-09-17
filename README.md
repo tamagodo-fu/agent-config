@@ -47,9 +47,10 @@ Always-loaded (or `paths:`-gated) policy that forms the judgment/safety baseline
 | File | What it does |
 |---|---|
 | `grounding-judgment.md` | Use relevant current evidence; ask about decisions that change scope, cost, permissions, or important preferences. |
+| `security.md` | Pre-commit secret scan and boundary-scoped security checks, plus the stop-and-report protocol when an issue is found. |
 | `memory-writing.md` | Persist learnings only when explicitly requested or covered by an approved recording workflow. |
 | `terminal-commands.md` | Hard-line guard for destructive ops plus file-handoff for commands the user must run themselves; the detailed judgment is lazy-loaded from `docs/`. |
-| `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. Loaded only when editing `.claude` config (`paths:` gated). |
+| `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. `paths:`-gated to `.claude` config (CLAUDE.md / rules / docs / agents / skills / settings), with CLAUDE.md carrying an explicit read-before-editing trigger since the gate fires on file reads. |
 | `coding-style.md` | Simplicity First; quality/robustness/maintainability over development cost (subordinate to Simplicity First); report unrelated issues instead of silently fixing them. |
 | `testing.md` | Select tests by scope and risk; reproduce bugs at the smallest appropriate layer, use E2E for important flows, and stop after relevant checks pass. |
 
