@@ -19,6 +19,7 @@ network_access = true
 
 [features]
 multi_agent = true
+multi_agent_v2 = true
 apps = true
 prevent_idle_sleep = true
 hooks = true

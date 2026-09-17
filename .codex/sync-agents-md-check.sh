@@ -30,17 +30,17 @@ if [ "${1:-}" = "--update" ]; then
 fi
 
 if [ ! -f "$BASELINE_FILE" ]; then
-  echo "基準ハッシュが未設定です。AGENTS.md生成後に --update を実行してください。"
+  echo "基準ハッシュが未設定です。同期元と手動派生AGENTS.mdの確認・反映後に --update を実行してください。"
   exit 2
 fi
 
 BASELINE_HASH="$(cat "$BASELINE_FILE")"
 
 if [ "$CURRENT_HASH" = "$BASELINE_HASH" ]; then
-  echo "同期済み: ~/.claude/CLAUDE.md + rules/ + docs/(policy 3本) に前回生成時からの変更なし"
+  echo "変更なし: 同期元は前回の確認記録から変わっていません（AGENTS.mdの内容一致は判定しません）"
   exit 0
 else
-  echo "要再生成: ~/.claude/CLAUDE.md / rules/ / docs/(policy 3本) のいずれかが前回のAGENTS.md生成時から変更されています"
-  echo "~/.codex/AGENTS.md を確認し、必要な変更を反映した上で $0 --update を実行してください"
+  echo "要確認: 同期元のいずれかが前回の確認記録から変わっています（設定エラーや内容の矛盾を意味しません）"
+  echo "同期元を確認し、必要な方針を ~/.codex/AGENTS.md に手動反映してから $0 --update を実行してください"
   exit 1
 fi

@@ -30,9 +30,10 @@ policies with **Codex CLI**, **herdr**, and **agmsg**.
     ├── cost-effective-harness/  # harness design-guidance skill (flagship)
     └── ...                      # ~30 hand-written skills — see Skills below
 .codex/
-├── AGENTS.md                    # cross-CLI instructions generated from .claude/CLAUDE.md + rules
+├── AGENTS.md                    # manually derived cross-CLI instructions preserving policy conditions
 ├── sync-agents-md-check.sh      # drift detector: warns when the .claude sources change
-└── config.toml                  # sanitized Codex CLI config (machine-local state removed)
+├── config.toml                  # sanitized Codex CLI config (machine-local state removed)
+└── agents/                      # sol_worker default; luna_worker opt-in
 .config/herdr/
 └── config.toml                  # herdr (terminal multiplexer for agents) keybinds / UI prefs
 .agents/skills/agmsg/plugins/types/devin/
@@ -45,13 +46,13 @@ Always-loaded (or `paths:`-gated) policy that forms the judgment/safety baseline
 
 | File | What it does |
 |---|---|
-| `grounding-judgment.md` | No-speculation by default — prioritize primary sources, and return judgment calls via `AskUserQuestion`. |
+| `grounding-judgment.md` | Use relevant current evidence; ask about decisions that change scope, cost, permissions, or important preferences. |
 | `security.md` | Pre-commit secret scan and boundary-scoped security checks, plus the stop-and-report protocol when an issue is found. |
-| `memory-writing.md` | Write to memory only on explicit request or inside an approved recording workflow; record correct if-then rules only, never failure narration. |
+| `memory-writing.md` | Persist learnings only when explicitly requested or covered by an approved recording workflow. |
 | `terminal-commands.md` | Hard-line guard for destructive ops plus file-handoff for commands the user must run themselves; the detailed judgment is lazy-loaded from `docs/`. |
 | `context-hygiene.md` | Meta-policy for the config itself — keep always-loaded context to safety/judgment foundations only, gate situational rules via `paths:`/skills/`docs/`, prefer code-as-reference, and right-size with `/doctor`. `paths:`-gated to `.claude` config (CLAUDE.md / rules / docs / agents / skills / settings), with CLAUDE.md carrying an explicit read-before-editing trigger since the gate fires on file reads. |
 | `coding-style.md` | Simplicity First; quality/robustness/maintainability over development cost (subordinate to Simplicity First); report unrelated issues instead of silently fixing them. |
-| `testing.md` | Coverage and test-type selection by size/risk (no fixed floor), a TDD default that may be simplified for low-risk mechanical changes, and a bug-fix rule: reproduce minimally first, escalating to E2E only when the flow itself is the suspect. |
+| `testing.md` | Select tests by scope and risk; reproduce bugs at the smallest appropriate layer, use E2E for important flows, and stop after relevant checks pass. |
 
 ### docs/ (lazy-loaded references)
 
@@ -59,7 +60,7 @@ Situational guidance, kept out of the always-loaded context and pulled in only w
 
 | File | What it does |
 |---|---|
-| `orchestration.md` | The main loop focuses on interpreting user instructions and dividing work; execution is delegated to subagents. Large fan-outs (4+ parallel agents, Workflow, ultracode) require explicit user approval with a cost/tradeoff explanation. Absorbs the former `agents.md` guidance on parallel subagents. |
+| `orchestration.md` | The main loop owns completion and delegates when independent work or specialist review justifies it. Large fan-outs (4+ parallel agents, Workflow, ultracode) require explicit user approval with a cost/tradeoff explanation. Absorbs the former `agents.md` guidance on parallel subagents. |
 | `performance.md` | Model selection strategy — orchestrator defaults to the top-tier model, workers default to a mid-tier model. |
 | `terminal-commands-details.md` | The detailed patterns behind `terminal-commands.md` — when to hand off vs. self-execute, and the file-writeout mechanics. |
 
@@ -68,10 +69,10 @@ Situational guidance, kept out of the always-loaded context and pulled in only w
 `.claude/` is the canonical config; the other directories are derived views so
 Codex CLI, herdr-managed agents, and agmsg peers follow the same policies:
 
-- **`.codex/AGENTS.md`** is generated from `CLAUDE.md` + `rules/` + `docs/`, with
+- **`.codex/AGENTS.md`** is manually derived from `CLAUDE.md` + `rules/` + `docs/`, with
   CLI-specific mechanics (tool names, hooks, settings) translated into
   tool-agnostic wording. `sync-agents-md-check.sh` hashes the sources and warns
-  when the generated file is stale.
+  when sources change. It does not generate the file or verify semantic equivalence; review the derived instructions after source changes.
 - **`.codex/config.toml`** is a sanitized snapshot — machine-local state
   (project trust lists, hook state, marketplaces, auto-injected MCP servers)
   is stripped; preferences, features, plugins, sandbox roots, and MCP
@@ -81,6 +82,17 @@ Codex CLI, herdr-managed agents, and agmsg peers follow the same policies:
   messaging) via its plugin mechanism, so the driver survives installer
   updates. Delivery uses Devin's always-on rules path
   (`.windsurf/rules/agmsg.md`); `spawnable` via `devin -- "<prompt>"`.
+
+### Codex model routing
+
+The published default is Astra (`gpt-6-astra`, high reasoning). Normal bounded
+delegation uses `sol_worker` (`gpt-5.6-sol`, medium); difficult design, debugging,
+and important reviews use Astra. `luna_worker` is opt-in for simple work. Copy
+`.codex/agents/` alongside the config to install the named worker roles.
+
+This update covers the shared instructions, model routing, and drift checker.
+Private Brain workspace instructions, Brain-owned skills, bundled system skills,
+credentials, and local project state are outside this repository snapshot.
 
 ### Usage
 
