@@ -19,6 +19,7 @@ policies with **Codex CLI**, **herdr**, and **agmsg**.
 │   ├── coding-style.md
 │   └── testing.md
 ├── docs/              # lazy-loaded references (pulled in only when relevant)
+├── evals/             # plugin eval suite for the natural-japanese skill (see its README)
 │   ├── orchestration.md
 │   ├── performance.md
 │   └── terminal-commands-details.md
