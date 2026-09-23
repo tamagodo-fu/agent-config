@@ -34,7 +34,8 @@ policies with **Codex CLI**, **herdr**, and **agmsg**.
 ├── AGENTS.md                    # manually derived cross-CLI instructions preserving policy conditions
 ├── sync-agents-md-check.sh      # drift detector: warns when the .claude sources change
 ├── config.toml                  # sanitized Codex CLI config (machine-local state removed)
-└── agents/                      # sol_worker default; luna_worker opt-in
+├── role-configs/                # explorer, worker, researcher_worker, reviewer model routing
+└── agents/                      # sol_worker default; luna_worker compatibility role
 .config/herdr/
 └── config.toml                  # herdr (terminal multiplexer for agents) keybinds / UI prefs
 .agents/skills/agmsg/plugins/types/devin/
@@ -86,14 +87,28 @@ Codex CLI, herdr-managed agents, and agmsg peers follow the same policies:
 
 ### Codex model routing
 
-The published default is Astra (`gpt-6-astra`, high reasoning). Normal bounded
-delegation uses `sol_worker` (`gpt-5.6-sol`, medium); difficult design, debugging,
-and important reviews use Astra. `luna_worker` is opt-in for simple work. Copy
-`.codex/agents/` alongside the config to install the named worker roles.
+The published default is Astra (`gpt-6-astra`, medium reasoning). Bounded
+implementation uses `worker` / `sol_worker` (`gpt-6-sol`, high); focused exploration
+and primary-source research use `explorer` / `researcher_worker` (`gpt-6-luna`, max).
+High-risk independent review uses Astra (`gpt-6-astra`, xhigh). The compatibility
+`luna_worker` role remains opt-in. Keep `.codex/agents/` and `.codex/role-configs/`
+with the config so every device gets the same role definitions.
 
 This update covers the shared instructions, model routing, and drift checker.
 Private Brain workspace instructions, Brain-owned skills, bundled system skills,
 credentials, and local project state are outside this repository snapshot.
+
+### Inherit Codex settings on another device
+
+Keep this repository cloned on each device and pull updates from Git when you want
+the shared settings. For a new Codex installation, copy `.codex/config.toml`,
+`.codex/AGENTS.md`, `.codex/agents/`, and `.codex/role-configs/` into `~/.codex/`.
+Back up an existing `~/.codex/config.toml` first; when updating an existing device,
+merge the portable model, feature, plugin, and `[agents]` entries instead of
+replacing machine-local project trust, hook state, MCP services, or desktop settings.
+Codex loads this config globally from `~/.codex/config.toml`; the same file in a
+project applies only when that project is trusted. Git pull plus copying/merging is
+an explicit update step, not live synchronization.
 
 ### Usage
 

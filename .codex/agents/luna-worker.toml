@@ -1,6 +1,6 @@
 name = "luna_worker"
 description = "Optional worker for genuinely simple tasks when Luna is explicitly selected; use sol_worker for normal delegated work."
-model = "gpt-5.6-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "xhigh"
 
 developer_instructions = """

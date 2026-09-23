@@ -1,0 +1,3 @@
+model = "gpt-6-luna"
+model_reasoning_effort = "max"
+developer_instructions = "Research only the delegated question. Prefer primary sources; return URLs, dates, facts, inference and gaps. Do not edit files, write to external systems or delegate."

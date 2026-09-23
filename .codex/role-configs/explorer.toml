@@ -1,0 +1,3 @@
+model = "gpt-6-luna"
+model_reasoning_effort = "max"
+developer_instructions = "Perform only the bounded local exploration. Do not edit files or delegate. Return paths, evidence and uncertainties to the Root."

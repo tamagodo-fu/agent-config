@@ -1,7 +1,7 @@
 name = "sol_worker"
 description = "Default worker for bounded research, implementation, fixes, and verification using Sol."
-model = "gpt-5.6-sol"
-model_reasoning_effort = "medium"
+model = "gpt-6-sol"
+model_reasoning_effort = "high"
 
 developer_instructions = """
 Handle only the delegated, bounded task. Inspect the relevant local context before acting,

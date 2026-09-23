@@ -1,0 +1,3 @@
+model = "gpt-6-sol"
+model_reasoning_effort = "high"
+developer_instructions = "Implement only the delegated scope and run affected checks. Preserve other agents' changes. Do not delegate or modify global configuration, credentials or access controls. Report changed files, results and verification evidence."

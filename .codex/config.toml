@@ -4,7 +4,7 @@
 # (node_repl / computer-use, managed by the ChatGPT desktop app).
 
 model = "gpt-6-astra"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 personality = "pragmatic"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
@@ -25,6 +25,26 @@ prevent_idle_sleep = true
 hooks = true
 js_repl = false
 memories = true
+
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+
+[agents.explorer]
+config_file = "role-configs/explorer.toml"
+description = "Bounded read-only local exploration using GPT-6 Luna max."
+
+[agents.worker]
+config_file = "role-configs/worker.toml"
+description = "Bounded implementation and affected tests using GPT-6 Sol high."
+
+[agents.researcher_worker]
+config_file = "role-configs/researcher.toml"
+description = "Focused primary-source research using GPT-6 Luna max."
+
+[agents.reviewer]
+config_file = "role-configs/reviewer.toml"
+description = "Independent high-risk review using GPT-6 Astra xhigh."
 
 [plugins."google-calendar@openai-curated"]
 enabled = true
